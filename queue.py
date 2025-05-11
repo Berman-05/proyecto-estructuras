@@ -1,18 +1,41 @@
-class Queue[T]:
-    def __init__(self):
-        self.value = [T]
+import json
 
-    def is_empty(self):
-        return len(self.value) == 0
+class Cola:
+    def __init__(self, max_nodos=10):
+        self.items = []
+        self.max_nodos = max_nodos
 
-    def enqueue(self, item:T):
-        self.value.insert(0, item)
+    def insertar(self, x):
+        if len(self.items) < self.max_nodos:
+            self.items.append(x)
+        else:
+            raise OverflowError("Cola llena")
 
-    def dequeue(self):
-        return self.value.pop()
+    def eliminar(self):
+        if self.items:
+            return self.items.pop(0)
+        else:
+            raise IndexError("Cola vacía")
 
-    def size(self):
-        return len(self.value)
+    def buscar(self, x):
+        try:
+            return self.items.index(x)
+        except ValueError:
+            return -1
 
-    def peek(self):
-        return self.value[-1] if not self.is_empty() else None
+    def limpiar(self):
+        self.items.clear()
+
+    @property
+    def tamaño(self):
+        return len(self.items)
+
+    def guardar_en_json(self, archivo):
+        with open(archivo, 'w') as f:
+            json.dump({'items': self.items, 'max_nodos': self.max_nodos}, f)
+
+    def cargar_de_json(self, archivo):
+        with open(archivo, 'r') as f:
+            datos = json.load(f)
+            self.items = datos['items']
+            self.max_nodos = datos['max_nodos']
