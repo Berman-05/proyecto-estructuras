@@ -1,43 +1,90 @@
-from nodes import SimpleNode
-class SinglyLinkedList[T]:
-    def __init__(self):
-        self.head = None
+from simple_node import NodoSimple
+import json
 
-    def insert_at_start(self, value:[T]):
-        new_node = SimpleNode(value)
-        new_node.next = self.head
-        self.head = new_node
+class ListaSimple:
+    def __init__(self, max_nodos=10):
+        self.cabeza = None
+        self.max_nodos = max_nodos
+        self._tamaño = 0
 
-    def insert_at_end(self, value:[T]):
-        new_node = SimpleNode(value)
-        if not self.head:
-            self.head = new_node
+    def insertar_inicio(self, x):
+        if self._tamaño < self.max_nodos:
+            nodo = NodoSimple(x)
+            nodo.siguiente = self.cabeza
+            self.cabeza = nodo
+            self._tamaño += 1
         else:
-            current = self.head
-            while current.next:
-                current = current.next
-            current.next = new_node
+            raise OverflowError("Lista llena")
 
-    def delete_from_start(self):
-        if not self.head:
-            raise IndexError("La lista está vacía")
-        self.head = self.head.next
-
-    def delete_from_end(self):
-        if not self.head:
-            raise IndexError("La lista está vacía")
-        if not self.head.next:
-            self.head = None
+    def insertar_final(self, x):
+        if self._tamaño < self.max_nodos:
+            nodo = NodoSimple(x)
+            if not self.cabeza:
+                self.cabeza = nodo
+            else:
+                aux = self.cabeza
+                while aux.siguiente:
+                    aux = aux.siguiente
+                aux.siguiente = nodo
+            self._tamaño += 1
         else:
-            current = self.head
-            while current.next and current.next.next:
-                current = current.next
-            current.next = None
+            raise OverflowError("Lista llena")
 
-    def search(self, value:[T]):
-        current = self.head
-        while current:
-            if current.value == value:
-                return True
-            current = current.next
-        return False
+    def eliminar_inicio(self):
+        if self.cabeza:
+            valor = self.cabeza.valor
+            self.cabeza = self.cabeza.siguiente
+            self._tamaño -= 1
+            return valor
+        else:
+            raise IndexError("Lista vacía")
+
+    def eliminar_final(self):
+        if not self.cabeza:
+            raise IndexError("Lista vacía")
+        if not self.cabeza.siguiente:
+            valor = self.cabeza.valor
+            self.cabeza = None
+        else:
+            aux = self.cabeza
+            while aux.siguiente.siguiente:
+                aux = aux.siguiente
+            valor = aux.siguiente.valor
+            aux.siguiente = None
+        self._tamaño -= 1
+        return valor
+
+    def buscar(self, x):
+        aux = self.cabeza
+        idx = 0
+        while aux:
+            if aux.valor == x:
+                return idx
+            aux = aux.siguiente
+            idx += 1
+        return -1
+
+    def limpiar(self):
+        self.cabeza = None
+        self._tamaño = 0
+
+    @property
+    def tamaño(self):
+        return self._tamaño
+
+    def guardar_en_json(self, archivo):
+        datos = []
+        aux = self.cabeza
+        while aux:
+            datos.append(aux.valor)
+            aux = aux.siguiente
+        with open(archivo, 'w') as f:
+            json.dump({'valores': datos, 'max_nodos': self.max_nodos}, f)
+
+    def cargar_de_json(self, archivo):
+        with open(archivo, 'r') as f:
+            datos = json.load(f)
+            self.limpiar()
+            self.max_nodos = datos['max_nodos']
+            for valor in datos['valores']:
+                self.insertar_final(valor)
