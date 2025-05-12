@@ -4,7 +4,8 @@ from tkinter import ttk, messagebox, filedialog
 from stack import Pila
 from queue import Cola
 from simple_list import ListaSimple
-
+from lista_circular_gui import CircularListFrame
+from lista_doble_gui import DoublyListFrame
 
 def dibujar_pila(canvas: tk.Canvas, pila: Pila, highlight_index=None):
     canvas.delete("all")
@@ -330,4 +331,6 @@ for nombre in ["pila", "cola", "lista_simple", "lista_circular", "lista_doble", 
                    command=lambda: mostrar_frame("menu")).pack(pady=20)
 
 mostrar_frame("menu")
+frames["lista_circular"] = CircularListFrame(root, mostrar_menu=lambda: mostrar_frame("menu"))
+frames["lista_doble"] = DoublyListFrame(root, mostrar_menu=lambda: mostrar_frame("menu"))
 root.mainloop()
