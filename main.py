@@ -6,7 +6,7 @@ from queue import Cola
 from simple_list import ListaSimple
 from lista_circular_gui import CircularListFrame
 from lista_doble_gui import DoublyListFrame
-
+from trees_gui import TreesGUI
 def dibujar_pila(canvas: tk.Canvas, pila: Pila, highlight_index=None):
     canvas.delete("all")
     ancho, alto, sep = 100, 40, 10
@@ -333,4 +333,6 @@ for nombre in ["pila", "cola", "lista_simple", "lista_circular", "lista_doble", 
 mostrar_frame("menu")
 frames["lista_circular"] = CircularListFrame(root, mostrar_menu=lambda: mostrar_frame("menu"))
 frames["lista_doble"] = DoublyListFrame(root, mostrar_menu=lambda: mostrar_frame("menu"))
+frames["trees_gui"] = TreesGUI.crear_menu_arbol_binario(root, frames, "arbol_binario", None)
+frames["arbol_busqueda"] = TreesGUI.crear_menu_arbol_busqueda(root, frames, "arbol_busqueda", None)
 root.mainloop()
